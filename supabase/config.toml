@@ -1,0 +1,8 @@
+[functions.gmail-callback]
+verify_jwt = false
+
+[functions.get-emails]
+verify_jwt = false
+
+[functions.disconnect-gmail]
+verify_jwt = false
