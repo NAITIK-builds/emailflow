@@ -9,6 +9,7 @@ import {
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { createClient } from '@/lib/supabase'
+import type { AuthChangeEvent, Session } from '@supabase/supabase-js'
 
 export default function Dashboard() {
   const router = useRouter()
@@ -164,7 +165,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     // Auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event: AuthChangeEvent, session: Session | null) => {
       if (session?.user) {
         const hasConnectedParam = window.location.search.includes('connected=true')
         if (hasConnectedParam || event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
