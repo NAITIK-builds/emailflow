@@ -246,33 +246,7 @@ export default function Dashboard() {
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-          style={{ width: '50px', height: '50px', borderRadius: '50%', border: '2px solid rgba(59,130,246,0.1)', borderTopColor: '#3b82f6', boxShadow: '0 0 20px rgba(59,130,246,0.2)' }}
-        />
-        <motion.p 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: [0.4, 0.7, 0.4] }}
-          transition={{ duration: 2, repeat: Infinity }}
-          style={{ fontSize: '12px', fontWeight: 600, letterSpacing: '4px', textTransform: 'uppercase', color: '#3b82f6' }}
-        >
-          Securely Connecting
-        </motion.p>
-      </div>
-    </div>
-  )
-
-  return (
-    <div className="dashboard-container" style={{ height: '100dvh', background: '#05050a', color: '#fff', display: 'flex', overflow: 'hidden', fontFamily: "'Outfit', sans-serif", paddingTop: viewingAsUser ? '40px' : '0', position: 'relative' }}>
-      <div className="bg-mesh" />
-
-      {/* Mobile Sidebar Overlay */}
-      <AnimatePresence>
-        {isSidebarOpen && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setIsSidebarOpen(false)}
-            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', zIndex: 2590 }}
+          style={{ width: '50px', height: '50px', borderRadius: '50%', border: '2px solid rgba(59,130,246,0            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', zIndex: 1999 }}
             className="mobile-only"
           />
         )}
@@ -281,6 +255,17 @@ export default function Dashboard() {
       {/* Audit Mode Banner */}
       {viewingAsUser && (
         <div className="audit-banner" style={{ position: 'fixed', top: 0, left: 0, right: 0, height: 'auto', minHeight: '40px', background: '#fbbf24', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '13px', zIndex: 3000, boxShadow: '0 4px 20px rgba(0,0,0,0.5)', padding: '8px 16px', gap: '12px' }}>
+           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Shield size={16} /> 
+              <span className="audit-text">AUDITING USER ACCOUNT</span>
+           </div>
+           <button onClick={() => router.push('/admin')} style={{ background: '#000', color: '#fff', border: 'none', borderRadius: '8px', padding: '6px 14px', fontSize: '11px', fontWeight: 900, cursor: 'pointer', whiteSpace: 'nowrap' }}>EXIT AUDIT</button>
+        </div>
+      )}
+
+      {/* SIDEBAR */}
+      <aside className={`dashboard-sidebar ${isSidebarOpen ? 'open' : ''}`} style={{ width: '280px', maxWidth: '85%', borderRight: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', zIndex: 2000, background: 'rgba(5,5,10,0.98)', backdropFilter: 'blur(30px)', transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)' }}>
+Items: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '13px', zIndex: 3000, boxShadow: '0 4px 20px rgba(0,0,0,0.5)', padding: '8px 16px', gap: '12px' }}>
            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Shield size={16} /> 
               <span className="audit-text">AUDITING USER ACCOUNT</span>
@@ -364,20 +349,6 @@ export default function Dashboard() {
         </div>
 
         <div onScroll={handleScroll} style={{ flex: 1, overflowY: 'auto' }} className="custom-scrollbar">
-          {fetchError && (
-            <motion.div 
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              style={{ margin: '16px', padding: '16px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '12px', color: '#fca5a5' }}
-            >
-              <AlertCircle size={20} style={{ flexShrink: 0 }} />
-              <div style={{ flex: 1, fontSize: '13px' }}>
-                <p style={{ margin: 0, fontWeight: 600 }}>Sync Error</p>
-                <p style={{ margin: 0, opacity: 0.7 }}>{fetchError}</p>
-              </div>
-              <button onClick={() => fetchEmails()} style={{ background: 'rgba(239, 68, 68, 0.2)', border: 'none', color: '#fff', padding: '6px 12px', borderRadius: '6px', fontSize: '11px', fontWeight: 700, cursor: 'pointer' }}>Retry</button>
-            </motion.div>
-          )}
           {!isGmailConnected ? (
              <div style={{ padding: '60px 24px', textAlign: 'center' }} className="connect-wrapper">
                 <button onClick={handleConnectGmail} style={{ width: '100%', maxWidth: '300px', background: 'linear-gradient(135deg, #3b82f6, #6366f1)', color: '#fff', border: 'none', padding: '16px', borderRadius: '16px', fontWeight: 800, fontSize: '15px', boxShadow: '0 10px 30px rgba(59,130,246,0.3)', cursor: 'pointer' }}>Connect Gmail</button>
@@ -429,27 +400,15 @@ export default function Dashboard() {
       <section className={`dashboard-detail ${selectedEmail ? 'email-selected' : ''}`} style={{ flex: 1, display: 'flex', background: 'rgba(0,0,0,0.15)', overflow: 'hidden', zIndex: 10 }}>
         {selectedEmail ? (
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-            <motion.header 
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              key={`header-${selectedEmail.id}`}
-              className="detail-header" 
-              style={{ padding: '20px 40px', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', gap: '16px' }}
-            >
+            <header className="detail-header" style={{ padding: '20px 40px', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', gap: '16px' }}>
               <button className="mobile-only" onClick={() => setSelectedEmail(null)} style={{ display: 'none', background: 'none', border: 'none', color: '#fff' }}><ArrowLeft size={20} /></button>
               <div style={{ flex: 1 }}>
                 <h1 style={{ fontSize: '24px', fontWeight: 900, marginBottom: '8px' }}>{selectedEmail.subject}</h1>
                 <p style={{ opacity: 0.5, fontSize: '14px' }}>From: {selectedEmail.sender}</p>
               </div>
-            </motion.header>
+            </header>
             <div className="custom-scrollbar" style={{ flex: 1, overflowY: 'auto', padding: '40px' }}>
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.98 }}
-                animate={{ opacity: 1, scale: 1 }}
-                key={`content-${selectedEmail.id}`}
-                className="detail-content-wrapper" 
-                style={{ maxWidth: '800px', margin: '0 auto', background: '#fff', borderRadius: '24px', overflow: 'hidden', boxShadow: '0 20px 50px rgba(0,0,0,0.3)' }}
-              >
+              <div className="detail-content-wrapper" style={{ maxWidth: '800px', margin: '0 auto', background: '#fff', borderRadius: '24px', overflow: 'hidden' }}>
                 {selectedEmail.html ? (
                    <iframe 
                       id={`email-iframe-${selectedEmail.id}`}
@@ -459,7 +418,7 @@ export default function Dashboard() {
                 ) : (
                   <div style={{ padding: '40px', color: '#333', whiteSpace: 'pre-wrap' }} className="text-body">{selectedEmail.text || selectedEmail.snippet}</div>
                 )}
-              </motion.div>
+              </div>
             </div>
           </div>
         ) : (

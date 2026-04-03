@@ -154,24 +154,24 @@ export default function AdminDashboard() {
       <div style={{ position: 'absolute', bottom: '-10%', right: '-10%', width: '40%', height: '40%', background: 'radial-gradient(circle, rgba(147,51,234,0.1) 0%, transparent 70%)', filter: 'blur(80px)', pointerEvents: 'none' }} />
 
       {/* Navbar */}
-      <header style={{ height: '80px', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 40px', background: 'rgba(5,5,10,0.6)', backdropFilter: 'blur(30px)', zIndex: 100 }}>
+      <header className="admin-nav" style={{ height: '80px', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 40px', background: 'rgba(5,5,10,0.6)', backdropFilter: 'blur(30px)', zIndex: 3000 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-          <button onClick={() => router.push('/dashboard')} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '10px', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', display: 'flex', alignItems: 'center', transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.color = '#fff' }} onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; e.currentTarget.style.color = 'rgba(255,255,255,0.5)' }}>
+          <button onClick={() => selectedUser ? setSelectedUser(null) : router.push('/dashboard')} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '10px', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', display: 'flex', alignItems: 'center', transition: 'all 0.2s' }}>
              <ArrowLeft size={20} />
           </button>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{ width: '32px', height: '32px', background: '#3b82f6', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: '32px', height: '32px', background: '#3b82f6', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               <Inbox size={20} color="#fff" />
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div className="admin-title-group" style={{ display: 'flex', flexDirection: 'column' }}>
               <span style={{ fontWeight: 900, fontSize: '18px', letterSpacing: '-0.5px', lineHeight: 1 }}>MailFlow Admin</span>
               <span style={{ fontSize: '10px', fontWeight: 700, color: '#3b82f6', letterSpacing: '1px', textTransform: 'uppercase', marginTop: '4px' }}>Control Center</span>
             </div>
           </div>
         </div>
         
-        <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-          <div style={{ position: 'relative' }}>
+        <div className="admin-nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+          <div className="admin-search-wrapper" style={{ position: 'relative' }}>
              <Search size={14} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.25)' }} />
              <input 
                type="text" 
@@ -179,32 +179,29 @@ export default function AdminDashboard() {
                style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '12px 16px 12px 42px', fontSize: '13px', color: '#fff', outline: 'none', width: '280px', transition: 'all 0.2s' }}
                value={searchQuery}
                onChange={(e) => setSearchQuery(e.target.value)}
-               onFocus={e => e.target.style.background = 'rgba(255,255,255,0.04)'}
-               onBlur={e => e.target.style.background = 'rgba(255,255,255,0.02)'}
              />
           </div>
           <button 
             onClick={() => window.location.reload()}
             title="Refresh Registry"
-            style={{ background: 'none', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '10px', color: 'rgba(255,255,255,0.4)', cursor: 'pointer', transition: 'all 0.2s' }}
-            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = '#fff' }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = 'rgba(255,255,255,0.4)' }}
+            className="mobile-hide"
+            style={{ background: 'none', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '10px', color: 'rgba(255,255,255,0.4)', cursor: 'pointer' }}
           >
              <RefreshCcw size={16} />
           </button>
-          <div style={{ height: '24px', width: '1px', background: 'rgba(255,255,255,0.08)' }} />
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 12px', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: '8px' }}>
+          <div className="mobile-hide" style={{ height: '24px', width: '1px', background: 'rgba(255,255,255,0.08)' }} />
+          <div className="system-status" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 12px', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: '8px' }}>
             <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#22c55e' }} className="animate-pulse" />
-            <span style={{ fontSize: '11px', fontWeight: 800, color: '#22c55e', textTransform: 'uppercase' }}>System Healthy</span>
+            <span className="status-text" style={{ fontSize: '11px', fontWeight: 800, color: '#22c55e', textTransform: 'uppercase' }}>System Healthy</span>
           </div>
         </div>
       </header>
 
-      <main className="admin-main" style={{ flex: 1, padding: '40px', maxWidth: '1600px', margin: '0 auto', width: '100%', boxSizing: 'border-box', position: 'relative', zIndex: 10 }}>
-        <div className="admin-grid" style={{ display: 'grid', gridTemplateColumns: '420px 1fr', gap: '40px', height: 'calc(100vh - 180px)', minHeight: '600px' }}>
+      <main className="admin-main" style={{ flex: 1, padding: '40px', maxWidth: '1600px', margin: '0 auto', width: '100%', boxSizing: 'border-box', position: 'relative', zIndex: 10, overflowY: 'hidden' }}>
+        <div className="admin-grid" style={{ display: 'grid', gridTemplateColumns: '420px 1fr', gap: '40px', height: 'calc(100dvh - 180px)', minHeight: '600px' }}>
           
           {/* User List Shell */}
-          <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minWidth: 0, minHeight: 0 }}>
+          <div className={`user-list-shell ${selectedUser ? 'mobile-hide' : ''}`} style={{ display: 'flex', flexDirection: 'column', height: '100%', minWidth: 0, minHeight: 0 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
                 <h2 style={{ fontSize: '18px', fontWeight: 800, margin: 0, display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <Users size={20} style={{ color: '#3b82f6' }} />
@@ -255,7 +252,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* User Detail Shell */}
-          <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minWidth: 0, minHeight: 0 }}>
+          <div className={`user-detail-shell ${!selectedUser ? 'mobile-hide' : 'mobile-show'}`} style={{ display: 'flex', flexDirection: 'column', height: '100%', minWidth: 0, minHeight: 0 }}>
             <div style={{ marginBottom: '16px' }}>
                <h2 style={{ fontSize: '18px', fontWeight: 800, margin: 0, display: 'flex', alignItems: 'center', gap: '10px', height: '32px' }}>
                  <Mail size={20} style={{ color: '#3b82f6' }} />
@@ -277,53 +274,49 @@ export default function AdminDashboard() {
                ) : (
                  <>
                    <div style={{ padding: '24px', borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.02)' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                           <div style={{ width: '48px', height: '48px', background: 'rgba(59,130,246,0.1)', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                              <UserIcon style={{ color: '#3b82f6' }} size={24} />
+                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                            <div style={{ width: '48px', height: '48px', background: 'rgba(59,130,246,0.1)', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                               <UserIcon style={{ color: '#3b82f6' }} size={24} />
+                            </div>
+                            <div>
+                               <h3 style={{ fontSize: '18px', fontWeight: 800, margin: '0 0 2px 0' }}>{selectedUser.full_name || 'Anonymous User'}</h3>
+                               <p style={{ fontSize: '13px', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                 {selectedUser.connected_gmail ? (
+                                   <>
+                                     <CheckCircle2 size={14} style={{ color: '#22c55e' }} />
+                                     <span style={{ color: '#60a5fa' }}>{selectedUser.connected_gmail}</span>
+                                   </>
+                                 ) : (
+                                   <span style={{ color: 'rgba(255,255,255,0.3)', fontStyle: 'italic' }}>No email connected</span>
+                                 )}
+                               </p>
+                            </div>
+                         </div>
+                         {selectedUser.connected_gmail && (
+                           <div className="detail-header-actions" style={{ display: 'flex', gap: '10px' }}>
+                              <button 
+                                onClick={() => router.push(`/dashboard?viewUser=${selectedUser.id}`)}
+                                title="View Full Dashboard"
+                                style={{ 
+                                  display: 'flex', alignItems: 'center', gap: '8px',
+                                  background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.3)',
+                                  borderRadius: '10px', padding: '8px 16px', color: '#60a5fa', cursor: 'pointer',
+                                  fontSize: '13px', fontWeight: 700, transition: 'all 0.2s'
+                                }}
+                              >
+                                 <ExternalLink size={14} /> Full View
+                              </button>
+                              <button 
+                                onClick={() => viewUserEmails(selectedUser)}
+                                disabled={isFetchingEmails}
+                                style={{ background: 'none', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px', padding: '10px', color: 'rgba(255,255,255,0.5)', cursor: 'pointer' }}
+                              >
+                                 <RefreshCcw size={18} className={isFetchingEmails ? 'animate-spin' : ''} />
+                              </button>
                            </div>
-                           <div>
-                              <h3 style={{ fontSize: '18px', fontWeight: 800, margin: '0 0 2px 0' }}>{selectedUser.full_name || 'Anonymous User'}</h3>
-                              <p style={{ fontSize: '13px', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                {selectedUser.connected_gmail ? (
-                                  <>
-                                    <CheckCircle2 size={14} style={{ color: '#22c55e' }} />
-                                    <span style={{ color: '#60a5fa' }}>{selectedUser.connected_gmail}</span>
-                                  </>
-                                ) : (
-                                  <span style={{ color: 'rgba(255,255,255,0.3)', fontStyle: 'italic' }}>No email connected</span>
-                                )}
-                              </p>
-                           </div>
-                        </div>
-                        {selectedUser.connected_gmail && (
-                          <div style={{ display: 'flex', gap: '10px' }}>
-                            <button 
-                              onClick={() => router.push(`/dashboard?viewUser=${selectedUser.id}`)}
-                              title="View Full Dashboard"
-                              style={{ 
-                                display: 'flex', alignItems: 'center', gap: '8px',
-                                background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.3)',
-                                borderRadius: '10px', padding: '8px 16px', color: '#60a5fa', cursor: 'pointer',
-                                fontSize: '13px', fontWeight: 700, transition: 'all 0.2s'
-                              }}
-                              onMouseEnter={e => e.currentTarget.style.background = 'rgba(59,130,246,0.2)'}
-                              onMouseLeave={e => e.currentTarget.style.background = 'rgba(59,130,246,0.1)'}
-                            >
-                               <ExternalLink size={14} /> Full View
-                            </button>
-                            <button 
-                              onClick={() => viewUserEmails(selectedUser)}
-                              disabled={isFetchingEmails}
-                              style={{ background: 'none', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px', padding: '10px', color: 'rgba(255,255,255,0.5)', cursor: 'pointer' }}
-                              onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
-                              onMouseLeave={e => e.currentTarget.style.background = 'none'}
-                            >
-                               <RefreshCcw size={18} className={isFetchingEmails ? 'animate-spin' : ''} />
-                            </button>
-                          </div>
-                        )}
-                      </div>
+                         )}
+                       </div>
                    </div>
 
                    <div className="custom-scrollbar" style={{ flex: 1, minHeight: 0, overflowY: 'auto', background: 'rgba(0,0,0,0.1)' }}>
@@ -367,6 +360,34 @@ export default function AdminDashboard() {
           </div>
         </div>
       </main>
+      <style>{`
+        @media (max-width: 1200px) {
+          .admin-grid { grid-template-columns: 350px 1fr !important; gap: 20px !important; }
+          .admin-nav { padding: 0 20px !important; }
+        }
+        @media (max-width: 1024px) {
+          .admin-nav-actions { gap: 12px !important; }
+          .admin-search-wrapper { width: 40px; transition: width 0.3s; overflow: hidden; }
+          .admin-search-wrapper:focus-within { width: 200px; }
+          .admin-search-wrapper input { width: 200px !important; }
+          .system-status { padding: 6px 8px !important; }
+          .status-text { display: none; }
+        }
+        @media (max-width: 768px) {
+          .admin-main { padding: 15px !important; }
+          .admin-grid { 
+            grid-template-columns: 1fr !important; 
+            height: calc(100dvh - 110px) !important;
+          }
+          .mobile-hide { display: none !important; }
+          .mobile-show { display: flex !important; }
+          .admin-nav { height: 70px !important; }
+          .admin-title-group { display: none !important; }
+          .detail-header-actions { flex-direction: column; align-items: stretch !important; gap: 10px !important; }
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+      `}</style>
     </div>
   )
 }
