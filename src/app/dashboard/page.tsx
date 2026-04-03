@@ -233,9 +233,30 @@ export default function Dashboard() {
   }, [emails, searchQuery])
 
   if (loading) return (
-    <div style={{ minHeight: '100vh', background: '#05050a', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '20px', color: '#fff' }}>
-      <RefreshCcw className="animate-spin" style={{ color: '#3b82f6' }} size={48} />
-      <p style={{ opacity: 0.6, fontSize: '14px', letterSpacing: '1px' }}>SYNCHRONIZING INBOX...</p>
+    <div style={{ minHeight: '100vh', background: '#05050a', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#fff', position: 'relative', overflow: 'hidden' }}>
+      <motion.div 
+        animate={{ 
+          scale: [1, 1.2, 1],
+          opacity: [0.3, 0.6, 0.3],
+        }}
+        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+        style={{ position: 'absolute', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(59,130,246,0.15) 0%, transparent 70%)', filter: 'blur(40px)', zIndex: 0 }}
+      />
+      <div style={{ zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '24px' }}>
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+          style={{ width: '50px', height: '50px', borderRadius: '50%', border: '2px solid rgba(59,130,246,0.1)', borderTopColor: '#3b82f6', boxShadow: '0 0 20px rgba(59,130,246,0.2)' }}
+        />
+        <motion.p 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0.4, 0.7, 0.4] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          style={{ fontSize: '12px', fontWeight: 600, letterSpacing: '4px', textTransform: 'uppercase', color: '#3b82f6' }}
+        >
+          Securely Connecting
+        </motion.p>
+      </div>
     </div>
   )
 
@@ -343,19 +364,64 @@ export default function Dashboard() {
         </div>
 
         <div onScroll={handleScroll} style={{ flex: 1, overflowY: 'auto' }} className="custom-scrollbar">
+          {fetchError && (
+            <motion.div 
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              style={{ margin: '16px', padding: '16px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '12px', color: '#fca5a5' }}
+            >
+              <AlertCircle size={20} style={{ flexShrink: 0 }} />
+              <div style={{ flex: 1, fontSize: '13px' }}>
+                <p style={{ margin: 0, fontWeight: 600 }}>Sync Error</p>
+                <p style={{ margin: 0, opacity: 0.7 }}>{fetchError}</p>
+              </div>
+              <button onClick={() => fetchEmails()} style={{ background: 'rgba(239, 68, 68, 0.2)', border: 'none', color: '#fff', padding: '6px 12px', borderRadius: '6px', fontSize: '11px', fontWeight: 700, cursor: 'pointer' }}>Retry</button>
+            </motion.div>
+          )}
           {!isGmailConnected ? (
              <div style={{ padding: '60px 24px', textAlign: 'center' }} className="connect-wrapper">
-                <button onClick={handleConnectGmail} style={{ width: '100%', maxWidth: '300px', background: 'linear-gradient(135deg, #3b82f6, #6366f1)', color: '#fff', border: 'none', padding: '16px', borderRadius: '16px', fontWeight: 800, fontSize: '15px' }}>Connect Gmail</button>
+                <button onClick={handleConnectGmail} style={{ width: '100%', maxWidth: '300px', background: 'linear-gradient(135deg, #3b82f6, #6366f1)', color: '#fff', border: 'none', padding: '16px', borderRadius: '16px', fontWeight: 800, fontSize: '15px', boxShadow: '0 10px 30px rgba(59,130,246,0.3)', cursor: 'pointer' }}>Connect Gmail</button>
              </div>
+          ) : isFetchingEmails && emails.length === 0 ? (
+            <div style={{ padding: '20px' }}>
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} style={{ marginBottom: '24px', opacity: 1 - (i * 0.15) }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                    <div className="skeleton-bg" style={{ width: '120px', height: '14px', borderRadius: '4px' }} />
+                    <div className="skeleton-bg" style={{ width: '40px', height: '10px', borderRadius: '4px' }} />
+                  </div>
+                  <div className="skeleton-bg" style={{ width: '80%', height: '12px', borderRadius: '4px', marginBottom: '8px' }} />
+                  <div className="skeleton-bg" style={{ width: '100%', height: '10px', borderRadius: '4px' }} />
+                </div>
+              ))}
+            </div>
           ) : filteredEmails.length > 0 ? (
-            filteredEmails.map((email) => (
-              <div key={email.id} onClick={() => setSelectedEmail(email)} style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.04)', cursor: 'pointer', background: selectedEmail?.id === email.id ? 'rgba(59,130,246,0.08)' : 'transparent' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px', gap: '12px' }}><span style={{ fontSize: '14px', fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{email.sender.split('<')[0]}</span><span style={{ fontSize: '10px', opacity: 0.4, flexShrink: 0 }}>{new Date(email.receivedAt).toLocaleDateString()}</span></div>
-                <h4 style={{ fontSize: '13px', margin: '0 0 4px 0', opacity: 0.8 }}>{email.subject}</h4>
-                <p style={{ fontSize: '12px', opacity: 0.4, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{email.snippet}</p>
-              </div>
-            ))
-          ) : <div style={{ padding: '80px 24px', textAlign: 'center', opacity: 0.3 }}><p>No emails found</p></div>}
+            <>
+              {filteredEmails.map((email) => (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  key={email.id} 
+                  onClick={() => setSelectedEmail(email)} 
+                  style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.04)', cursor: 'pointer', background: selectedEmail?.id === email.id ? 'rgba(59,130,246,0.08)' : 'transparent', transition: 'background 0.2s' }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px', gap: '12px' }}><span style={{ fontSize: '14px', fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: selectedEmail?.id === email.id ? '#60a5fa' : '#fff' }}>{email.sender.split('<')[0]}</span><span style={{ fontSize: '10px', opacity: 0.4, flexShrink: 0 }}>{new Date(email.receivedAt).toLocaleDateString()}</span></div>
+                  <h4 style={{ fontSize: '13px', margin: '0 0 4px 0', opacity: 0.8, fontWeight: 500 }}>{email.subject}</h4>
+                  <p style={{ fontSize: '12px', opacity: 0.3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{email.snippet}</p>
+                </motion.div>
+              ))}
+              {isLoadingMore && (
+                <div style={{ padding: '20px', textAlign: 'center' }}>
+                  <RefreshCcw size={16} className="animate-spin" style={{ color: 'rgba(255,255,255,0.2)' }} />
+                </div>
+              )}
+            </>
+          ) : !isFetchingEmails ? (
+            <div style={{ padding: '80px 24px', textAlign: 'center', opacity: 0.3 }}>
+              <div style={{ marginBottom: '16px' }}><Mail size={40} strokeWidth={1} style={{ margin: '0 auto' }} /></div>
+              <p style={{ fontSize: '14px' }}>No emails found in this category</p>
+            </div>
+          ) : null}
         </div>
       </main>
 
@@ -363,15 +429,27 @@ export default function Dashboard() {
       <section className={`dashboard-detail ${selectedEmail ? 'email-selected' : ''}`} style={{ flex: 1, display: 'flex', background: 'rgba(0,0,0,0.15)', overflow: 'hidden', zIndex: 10 }}>
         {selectedEmail ? (
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-            <header className="detail-header" style={{ padding: '20px 40px', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <motion.header 
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              key={`header-${selectedEmail.id}`}
+              className="detail-header" 
+              style={{ padding: '20px 40px', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', gap: '16px' }}
+            >
               <button className="mobile-only" onClick={() => setSelectedEmail(null)} style={{ display: 'none', background: 'none', border: 'none', color: '#fff' }}><ArrowLeft size={20} /></button>
               <div style={{ flex: 1 }}>
                 <h1 style={{ fontSize: '24px', fontWeight: 900, marginBottom: '8px' }}>{selectedEmail.subject}</h1>
                 <p style={{ opacity: 0.5, fontSize: '14px' }}>From: {selectedEmail.sender}</p>
               </div>
-            </header>
+            </motion.header>
             <div className="custom-scrollbar" style={{ flex: 1, overflowY: 'auto', padding: '40px' }}>
-              <div className="detail-content-wrapper" style={{ maxWidth: '800px', margin: '0 auto', background: '#fff', borderRadius: '24px', overflow: 'hidden' }}>
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                key={`content-${selectedEmail.id}`}
+                className="detail-content-wrapper" 
+                style={{ maxWidth: '800px', margin: '0 auto', background: '#fff', borderRadius: '24px', overflow: 'hidden', boxShadow: '0 20px 50px rgba(0,0,0,0.3)' }}
+              >
                 {selectedEmail.html ? (
                    <iframe 
                       id={`email-iframe-${selectedEmail.id}`}
@@ -381,7 +459,7 @@ export default function Dashboard() {
                 ) : (
                   <div style={{ padding: '40px', color: '#333', whiteSpace: 'pre-wrap' }} className="text-body">{selectedEmail.text || selectedEmail.snippet}</div>
                 )}
-              </div>
+              </motion.div>
             </div>
           </div>
         ) : (
@@ -432,6 +510,15 @@ export default function Dashboard() {
         .refresh-btn:active { transform: scale(0.9); }
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        .skeleton-bg {
+          background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 75%);
+          background-size: 200% 100%;
+          animation: skeleton-loading 1.5s infinite linear;
+        }
+        @keyframes skeleton-loading {
+          0% { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
+        }
       `}</style>
     </div>
   )
