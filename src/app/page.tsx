@@ -3,10 +3,10 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Mail, Shield, Zap, ArrowRight, GitBranch, AlertCircle, CheckCircle2, 
-  Command, Lock, Globe, Cpu
+  Command, Lock, Globe, Cpu, Menu, X
 } from 'lucide-react'
 
 export default function Home() {
@@ -16,6 +16,7 @@ export default function Home() {
   const [scrolled, setScrolled] = useState(false)
   const [authChecked, setAuthChecked] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
@@ -82,7 +83,7 @@ export default function Home() {
           <span style={{ fontWeight: 800, fontSize: '20px', letterSpacing: '-0.8px', background: 'linear-gradient(135deg, #fff, rgba(255,255,255,0.5))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>MailFlow</span>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div className="nav-links" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <a href="#features" style={{ color: 'rgba(255,255,255,0.55)', fontSize: '14px', fontWeight: 500, padding: '8px 16px', textDecoration: 'none', borderRadius: '10px', transition: 'all 0.2s' }}>Features</a>
           <a href="#security" style={{ color: 'rgba(255,255,255,0.55)', fontSize: '14px', fontWeight: 500, padding: '8px 16px', textDecoration: 'none', borderRadius: '10px', transition: 'all 0.2s' }}>Security</a>
           {isLoggedIn ? (
@@ -95,19 +96,47 @@ export default function Home() {
             </button>
           )}
         </div>
+        <button 
+          className="mobile-toggle" 
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          style={{ display: 'none', background: 'none', border: 'none', color: '#fff', cursor: 'pointer', padding: '8px' }}
+        >
+          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
       </nav>
 
+      {/* === MOBILE MENU OVERLAY === */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            style={{ position: 'fixed', top: '90px', left: '24px', right: '24px', background: 'rgba(5,5,10,0.95)', backdropFilter: 'blur(30px)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '20px', padding: '24px', zIndex: 99, display: 'flex', flexDirection: 'column', gap: '16px', boxShadow: '0 20px 40px rgba(0,0,0,0.4)' }}
+          >
+            <a href="#features" onClick={() => setIsMenuOpen(false)} style={{ color: '#fff', fontSize: '16px', fontWeight: 600, textDecoration: 'none', padding: '12px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>Features</a>
+            <a href="#security" onClick={() => setIsMenuOpen(false)} style={{ color: '#fff', fontSize: '16px', fontWeight: 600, textDecoration: 'none', padding: '12px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>Security</a>
+            <button
+               onClick={isLoggedIn ? handleGoToDashboard : handleLogin}
+               style={{ background: 'linear-gradient(135deg, #3b82f6, #6366f1)', color: '#fff', border: 'none', padding: '16px', borderRadius: '12px', fontWeight: 700, fontSize: '16px', cursor: 'pointer' }}
+            >
+              {isLoggedIn ? 'Dashboard' : 'Sign In'}
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* === HERO SECTION === */}
-      <section style={{ position: 'relative', zIndex: 10, maxWidth: '1200px', margin: '0 auto', padding: '200px 32px 120px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '80px', alignItems: 'center' }}>
+      <section className="hero-grid" style={{ position: 'relative', zIndex: 10, maxWidth: '1200px', margin: '0 auto', padding: '200px 32px 120px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '80px', alignItems: 'center' }}>
         
         {/* LEFT: Copy */}
-        <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7 }}>
+        <motion.div className="hero-copy" initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7 }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.25)', borderRadius: '100px', padding: '6px 16px', marginBottom: '28px' }}>
             <div style={{ width: '6px', height: '6px', background: '#3b82f6', borderRadius: '50%' }} />
             <span style={{ fontSize: '12px', fontWeight: 700, color: '#60a5fa', textTransform: 'uppercase', letterSpacing: '2px' }}>Next Gen Inbox</span>
           </div>
 
-          <h1 style={{ fontSize: '72px', fontWeight: 900, lineHeight: 1, letterSpacing: '-3px', marginBottom: '24px' }}>
+          <h1 className="hero-title" style={{ fontSize: '72px', fontWeight: 900, lineHeight: 1, letterSpacing: '-3px', marginBottom: '24px' }}>
             Elevate your<br />
             <span style={{ background: 'linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
               email flow
@@ -159,7 +188,7 @@ export default function Home() {
         </motion.div>
 
         {/* RIGHT: Dashboard Mockup */}
-        <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.9, delay: 0.2 }} style={{ position: 'relative' }}>
+        <motion.div className="hero-mockup" initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.9, delay: 0.2 }} style={{ position: 'relative' }}>
           <div style={{ position: 'absolute', inset: '-30px', background: 'radial-gradient(ellipse, rgba(99,102,241,0.2) 0%, transparent 70%)', borderRadius: '50%', filter: 'blur(30px)' }} />
           
           {/* Main mockup card */}
@@ -264,7 +293,7 @@ export default function Home() {
           </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px' }}>
+        <div className="features-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px' }}>
           {[
             { icon: <Zap size={24} color="#fbbf24" />, color: 'rgba(251,191,36,0.1)', border: 'rgba(251,191,36,0.2)', title: 'Blazing Fast', desc: 'Emails fetched in under 100ms via Supabase Edge Functions distributed worldwide.' },
             { icon: <Shield size={24} color="#60a5fa" />, color: 'rgba(96,165,250,0.1)', border: 'rgba(96,165,250,0.2)', title: 'Privacy First', desc: 'Zero data extraction. Encrypted OAuth tokens. HIPAA & GDPR compliant by design.' },
@@ -289,12 +318,12 @@ export default function Home() {
       </section>
 
       {/* === CTA === */}
-      <section style={{ position: 'relative', zIndex: 10, maxWidth: '900px', margin: '0 auto', padding: '80px 32px 120px' }}>
-        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+      <section style={{ position: 'relative', zIndex: 10, maxWidth: '1200px', margin: '0 auto', padding: '80px 32px 120px' }}>
+        <motion.div className="cta-box" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
           style={{ background: 'linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(139,92,246,0.1) 100%)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '32px', padding: '80px 48px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}
         >
           <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at 50% 50%, rgba(99,102,241,0.15) 0%, transparent 60%)', pointerEvents: 'none' }} />
-          <h2 style={{ fontSize: '52px', fontWeight: 900, letterSpacing: '-2px', marginBottom: '20px', lineHeight: 1 }}>
+          <h2 className="cta-title" style={{ fontSize: '52px', fontWeight: 900, letterSpacing: '-2px', marginBottom: '20px', lineHeight: 1 }}>
             Ready to take <span style={{ background: 'linear-gradient(135deg, #60a5fa, #a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Control?</span>
           </h2>
           <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '18px', marginBottom: '48px', fontWeight: 300 }}>
@@ -310,7 +339,7 @@ export default function Home() {
       </section>
 
       {/* === FOOTER === */}
-      <footer style={{ borderTop: '1px solid rgba(255,255,255,0.05)', padding: '48px 32px', maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', position: 'relative', zIndex: 10 }}>
+      <footer className="footer-box" style={{ borderTop: '1px solid rgba(255,255,255,0.05)', padding: '48px 32px', maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', position: 'relative', zIndex: 10 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{ width: '28px', height: '28px', background: 'linear-gradient(135deg, #3b82f6, #6366f1)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Mail size={14} color="#fff" />
@@ -326,6 +355,24 @@ export default function Home() {
 
       <style>{`
         @keyframes pulse { 0%, 100% { opacity: 0.7; } 50% { opacity: 0.4; } }
+        
+        @media (max-width: 1024px) {
+          .hero-grid { grid-template-columns: 1fr !important; text-align: center; gap: 40px !important; padding-top: 140px !important; }
+          .hero-copy { display: flex; flex-direction: column; align-items: center; }
+          .hero-title { fontSize: 48px !important; }
+          .hero-mockup { display: none !important; }
+          .features-grid { grid-template-columns: 1fr 1fr !important; }
+        }
+
+        @media (max-width: 768px) {
+          .nav-links { display: none !important; }
+          .mobile-toggle { display: block !important; }
+          .hero-title { font-size: 42px !important; }
+          .features-grid { grid-template-columns: 1fr !important; }
+          .cta-box { padding: 40px 24px !important; }
+          .cta-title { font-size: 32px !important; }
+          .footer-box { justify-content: center !important; text-align: center; }
+        }
       `}</style>
     </div>
   )

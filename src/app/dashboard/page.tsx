@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation'
 import { 
   Mail, Inbox, Star, Send, File, Archive, Trash2, 
   Search, MoreVertical, RefreshCcw, LogOut, 
-  ChevronRight, Reply, Forward, Shield, ExternalLink, AlertCircle 
+  ChevronRight, Reply, Forward, Shield, ExternalLink, AlertCircle,
+  Menu, ArrowLeft
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { createClient } from '@/lib/supabase'
@@ -29,6 +30,7 @@ export default function Dashboard() {
   const [isLoadingMore, setIsLoadingMore] = useState(false)
   const [iframeHeights, setIframeHeights] = useState<Record<string, number>>({})
   const [viewingAsUser, setViewingAsUser] = useState<string | null>(null)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   const getAccessToken = async (): Promise<string | null> => {
     try {
@@ -250,10 +252,13 @@ export default function Dashboard() {
       )}
 
       {/* SIDEBAR */}
-      <aside className="dashboard-sidebar" style={{ width: '260px', borderRight: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', zIndex: 20, background: 'rgba(5,5,10,0.4)', backdropFilter: 'blur(20px)' }}>
-        <div style={{ padding: '24px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div style={{ background: 'linear-gradient(135deg, #3b82f6, #6366f1)', padding: '10px', borderRadius: '12px' }}><Mail size={20} color="#fff" /></div>
-          <span style={{ fontWeight: 800, fontSize: '22px', background: 'linear-gradient(135deg, #fff, rgba(255,255,255,0.4))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>MailFlow</span>
+      <aside className={`dashboard-sidebar ${isSidebarOpen ? 'open' : ''}`} style={{ width: '260px', borderRight: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', zIndex: 200, background: 'rgba(5,5,10,0.9)', backdropFilter: 'blur(30px)' }}>
+        <div style={{ padding: '24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ background: 'linear-gradient(135deg, #3b82f6, #6366f1)', padding: '10px', borderRadius: '12px' }}><Mail size={20} color="#fff" /></div>
+            <span style={{ fontWeight: 800, fontSize: '22px', background: 'linear-gradient(135deg, #fff, rgba(255,255,255,0.4))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>MailFlow</span>
+          </div>
+          <button className="mobile-only" onClick={() => setIsSidebarOpen(false)} style={{ display: 'none', background: 'none', border: 'none', color: '#fff' }}><ArrowLeft size={20} /></button>
         </div>
 
         <div className="scrollbar-hide" style={{ flex: 1, overflowY: 'auto', padding: '0 12px', marginTop: '16px' }}>
@@ -286,7 +291,11 @@ export default function Dashboard() {
       </aside>
 
       {/* LIST */}
-      <main className="dashboard-list" style={{ width: '400px', borderRight: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', background: 'rgba(255,255,255,0.01)' }}>
+      <main className={`dashboard-list ${selectedEmail ? 'email-selected' : ''}`} style={{ width: '400px', borderRight: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', background: 'rgba(255,255,255,0.01)' }}>
+        <div className="mobile-nav-header" style={{ display: 'none', padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.06)', alignItems: 'center', gap: '16px' }}>
+          <button onClick={() => setIsSidebarOpen(true)} style={{ background: 'none', border: 'none', color: '#fff' }}><Menu size={20} /></button>
+          <span style={{ fontWeight: 800, fontSize: '18px' }}>MailFlow</span>
+        </div>
         <div style={{ padding: '24px', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <div style={{ position: 'relative' }}>
             <Search style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.25)' }} size={16} />
@@ -316,12 +325,15 @@ export default function Dashboard() {
       </main>
 
       {/* DETAIL */}
-      <section className="dashboard-detail" style={{ flex: 1, display: 'flex', background: 'rgba(0,0,0,0.15)', overflow: 'hidden' }}>
+      <section className={`dashboard-detail ${selectedEmail ? 'email-selected' : ''}`} style={{ flex: 1, display: 'flex', background: 'rgba(0,0,0,0.15)', overflow: 'hidden' }}>
         {selectedEmail ? (
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-            <header style={{ padding: '20px 40px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-              <h1 style={{ fontSize: '24px', fontWeight: 900, marginBottom: '8px' }}>{selectedEmail.subject}</h1>
-              <p style={{ opacity: 0.5, fontSize: '14px' }}>From: {selectedEmail.sender}</p>
+            <header className="detail-header" style={{ padding: '20px 40px', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <button className="mobile-only" onClick={() => setSelectedEmail(null)} style={{ display: 'none', background: 'none', border: 'none', color: '#fff' }}><ArrowLeft size={20} /></button>
+              <div style={{ flex: 1 }}>
+                <h1 style={{ fontSize: '24px', fontWeight: 900, marginBottom: '8px' }}>{selectedEmail.subject}</h1>
+                <p style={{ opacity: 0.5, fontSize: '14px' }}>From: {selectedEmail.sender}</p>
+              </div>
             </header>
             <div className="custom-scrollbar" style={{ flex: 1, overflowY: 'auto', padding: '40px' }}>
               <div style={{ maxWidth: '800px', margin: '0 auto', background: '#fff', borderRadius: '24px', overflow: 'hidden' }}>
@@ -342,4 +354,38 @@ export default function Dashboard() {
       </section>
     </div>
   )
+}
+
+const styles = `
+  @media (max-width: 1024px) {
+    .dashboard-sidebar {
+      position: fixed !important;
+      top: 0; bottom: 0; left: -260px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 20px 0 50px rgba(0,0,0,0.8);
+    }
+    .dashboard-sidebar.open {
+      left: 0 !important;
+    }
+    .dashboard-list { width: 100% !important; flex: 1 !important; border-right: none !important; }
+    .dashboard-detail {
+      position: fixed !important;
+      inset: 0;
+      background: #05050a !important;
+      z-index: 150;
+      display: none !important;
+    }
+    .dashboard-list.email-selected { display: none !important; }
+    .dashboard-detail.email-selected { display: flex !important; }
+    .mobile-only { display: block !important; }
+    .mobile-nav-header { display: flex !important; }
+    .detail-header { padding: 16px 20px !important; }
+    .detail-header h1 { font-size: 18px !important; }
+  }
+`
+
+if (typeof document !== 'undefined') {
+  const styleTag = document.createElement('style')
+  styleTag.innerHTML = styles
+  document.head.appendChild(styleTag)
 }
