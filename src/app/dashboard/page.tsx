@@ -240,8 +240,22 @@ export default function Dashboard() {
   )
 
   return (
-    <div className="dashboard-container" style={{ height: '100vh', background: '#05050a', color: '#fff', display: 'flex', overflow: 'hidden', fontFamily: "'Outfit', sans-serif", paddingTop: viewingAsUser ? '40px' : '0' }}>
+    <div className="dashboard-container" style={{ height: '100dvh', background: '#05050a', color: '#fff', display: 'flex', overflow: 'hidden', fontFamily: "'Outfit', sans-serif", paddingTop: viewingAsUser ? '40px' : '0', position: 'relative' }}>
       <div className="bg-mesh" />
+
+      {/* Mobile Sidebar Overlay */}
+      <AnimatePresence>
+        {isSidebarOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsSidebarOpen(false)}
+            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', zIndex: 190, display: 'none' }}
+            className="mobile-only"
+          />
+        )}
+      </AnimatePresence>
 
       {/* Audit Mode Banner */}
       {viewingAsUser && (
@@ -252,7 +266,7 @@ export default function Dashboard() {
       )}
 
       {/* SIDEBAR */}
-      <aside className={`dashboard-sidebar ${isSidebarOpen ? 'open' : ''}`} style={{ width: '260px', borderRight: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', zIndex: 200, background: 'rgba(5,5,10,0.9)', backdropFilter: 'blur(30px)' }}>
+      <aside className={`dashboard-sidebar ${isSidebarOpen ? 'open' : ''}`} style={{ width: '280px', maxWidth: '85%', borderRight: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', zIndex: 200, background: 'rgba(5,5,10,0.95)', backdropFilter: 'blur(30px)' }}>
         <div style={{ padding: '24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div style={{ background: 'linear-gradient(135deg, #3b82f6, #6366f1)', padding: '10px', borderRadius: '12px' }}><Mail size={20} color="#fff" /></div>
@@ -270,7 +284,7 @@ export default function Dashboard() {
             { id: 'archive', icon: <Archive size={18} />, label: 'Archive' },
             { id: 'trash', icon: <Trash2 size={18} />, label: 'Trash' },
           ].map((item) => (
-            <button key={item.id} onClick={() => setActiveCategory(item.id)} style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', borderRadius: '12px', fontSize: '14px', marginBottom: '4px', border: 'none', cursor: 'pointer', background: activeCategory === item.id ? 'rgba(59,130,246,0.12)' : 'transparent', color: activeCategory === item.id ? '#60a5fa' : 'rgba(255,255,255,0.4)', fontWeight: activeCategory === item.id ? 600 : 400 }}>
+            <button key={item.id} onClick={() => { setActiveCategory(item.id); setIsSidebarOpen(false); }} style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', borderRadius: '12px', fontSize: '14px', marginBottom: '4px', border: 'none', cursor: 'pointer', background: activeCategory === item.id ? 'rgba(59,130,246,0.12)' : 'transparent', color: activeCategory === item.id ? '#60a5fa' : 'rgba(255,255,255,0.4)', fontWeight: activeCategory === item.id ? 600 : 400 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>{item.icon}<span>{item.label}</span></div>
               {item.count ? <span style={{ fontSize: '11px', background: 'rgba(59,130,246,0.2)', padding: '2px 8px', borderRadius: '100px' }}>{item.count}</span> : null}
             </button>
@@ -291,7 +305,7 @@ export default function Dashboard() {
       </aside>
 
       {/* LIST */}
-      <main className={`dashboard-list ${selectedEmail ? 'email-selected' : ''}`} style={{ width: '400px', borderRight: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', background: 'rgba(255,255,255,0.01)' }}>
+      <main className={`dashboard-list ${selectedEmail ? 'email-selected' : ''}`} style={{ width: '400px', flexShrink: 0, borderRight: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', background: 'rgba(255,255,255,0.01)', minWidth: 0 }}>
         <div className="mobile-nav-header" style={{ display: 'none', padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.06)', alignItems: 'center', gap: '16px' }}>
           <button onClick={() => setIsSidebarOpen(true)} style={{ background: 'none', border: 'none', color: '#fff' }}><Menu size={20} /></button>
           <span style={{ fontWeight: 800, fontSize: '18px' }}>MailFlow</span>
@@ -309,8 +323,8 @@ export default function Dashboard() {
 
         <div onScroll={handleScroll} style={{ flex: 1, overflowY: 'auto' }} className="custom-scrollbar">
           {!isGmailConnected ? (
-             <div style={{ padding: '80px 48px', textAlign: 'center' }}>
-                <button onClick={handleConnectGmail} style={{ width: '100%', background: 'linear-gradient(135deg, #3b82f6, #6366f1)', color: '#fff', border: 'none', padding: '14px', borderRadius: '14px', fontWeight: 700 }}>Connect Gmail</button>
+             <div style={{ padding: '60px 24px', textAlign: 'center' }} className="connect-wrapper">
+                <button onClick={handleConnectGmail} style={{ width: '100%', maxWidth: '300px', background: 'linear-gradient(135deg, #3b82f6, #6366f1)', color: '#fff', border: 'none', padding: '16px', borderRadius: '16px', fontWeight: 800, fontSize: '15px' }}>Connect Gmail</button>
              </div>
           ) : filteredEmails.length > 0 ? (
             filteredEmails.map((email) => (
@@ -336,11 +350,11 @@ export default function Dashboard() {
               </div>
             </header>
             <div className="custom-scrollbar" style={{ flex: 1, overflowY: 'auto', padding: '40px' }}>
-              <div style={{ maxWidth: '800px', margin: '0 auto', background: '#fff', borderRadius: '24px', overflow: 'hidden' }}>
+              <div className="detail-content-wrapper" style={{ maxWidth: '800px', margin: '0 auto', background: '#fff', borderRadius: '24px', overflow: 'hidden' }}>
                 {selectedEmail.html ? (
-                   <iframe srcDoc={`<html><body style="font-family:sans-serif;padding:20px;">${selectedEmail.html}</body></html>`} style={{ width: '100%', height: '800px', border: 'none' }} />
+                   <iframe srcDoc={`<html><body style="font-family:sans-serif;padding:20px;margin:0;overflow-x:hidden;">${selectedEmail.html}</body></html>`} style={{ width: '100%', height: '800px', border: 'none' }} />
                 ) : (
-                  <div style={{ padding: '40px', color: '#333', whiteSpace: 'pre-wrap' }}>{selectedEmail.text || selectedEmail.snippet}</div>
+                  <div style={{ padding: '40px', color: '#333', whiteSpace: 'pre-wrap' }} className="text-body">{selectedEmail.text || selectedEmail.snippet}</div>
                 )}
               </div>
             </div>
@@ -352,40 +366,39 @@ export default function Dashboard() {
           </div>
         )}
       </section>
+      <style>{`
+        @media (max-width: 1024px) {
+          .dashboard-container { overflow: hidden !important; }
+          .dashboard-sidebar {
+            position: fixed !important;
+            top: 0; bottom: 0; left: -260px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 20px 0 50px rgba(0,0,0,0.8);
+          }
+          .dashboard-sidebar.open {
+            left: 0 !important;
+          }
+          .dashboard-list { width: 100% !important; flex: 1 !important; border-right: none !important; min-width: 0 !important; flex-shrink: 0 !important; }
+          .dashboard-detail {
+            position: fixed !important;
+            inset: 0;
+            background: #05050a !important;
+            z-index: 1500;
+            display: none !important;
+            width: 100% !important;
+          }
+          .dashboard-list.email-selected { display: none !important; }
+          .dashboard-detail.email-selected { display: flex !important; }
+          .mobile-only { display: block !important; }
+          .mobile-nav-header { display: flex !important; }
+          .detail-header { padding: 16px 20px !important; }
+          .detail-header h1 { font-size: 16px !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+          .custom-scrollbar { padding: 0 !important; }
+          .detail-content-wrapper { border-radius: 12px !important; margin: 10px !important; }
+          .text-body { padding: 20px !important; font-size: 14px !important; }
+          .connect-wrapper { padding: 40px 20px !important; }
+        }
+      `}</style>
     </div>
   )
-}
-
-const styles = `
-  @media (max-width: 1024px) {
-    .dashboard-sidebar {
-      position: fixed !important;
-      top: 0; bottom: 0; left: -260px;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 20px 0 50px rgba(0,0,0,0.8);
-    }
-    .dashboard-sidebar.open {
-      left: 0 !important;
-    }
-    .dashboard-list { width: 100% !important; flex: 1 !important; border-right: none !important; }
-    .dashboard-detail {
-      position: fixed !important;
-      inset: 0;
-      background: #05050a !important;
-      z-index: 150;
-      display: none !important;
-    }
-    .dashboard-list.email-selected { display: none !important; }
-    .dashboard-detail.email-selected { display: flex !important; }
-    .mobile-only { display: block !important; }
-    .mobile-nav-header { display: flex !important; }
-    .detail-header { padding: 16px 20px !important; }
-    .detail-header h1 { font-size: 18px !important; }
-  }
-`
-
-if (typeof document !== 'undefined') {
-  const styleTag = document.createElement('style')
-  styleTag.innerHTML = styles
-  document.head.appendChild(styleTag)
 }
