@@ -251,7 +251,7 @@ export default function Dashboard() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setIsSidebarOpen(false)}
-            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', zIndex: 1999 }}
+            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', zIndex: 2590 }}
             className="mobile-only"
           />
         )}
@@ -259,14 +259,17 @@ export default function Dashboard() {
 
       {/* Audit Mode Banner */}
       {viewingAsUser && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, height: '40px', background: '#fbbf24', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '13px', zIndex: 1000, boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
-           <Shield style={{ marginRight: '10px' }} size={16} /> YOU ARE CURRENTLY AUDITING A USER ACCOUNT
-           <button onClick={() => router.push('/admin')} style={{ marginLeft: '24px', background: '#000', color: '#fff', border: 'none', borderRadius: '6px', padding: '4px 12px', fontSize: '11px', fontWeight: 900, cursor: 'pointer' }}>RETURN TO ADMIN</button>
+        <div className="audit-banner" style={{ position: 'fixed', top: 0, left: 0, right: 0, height: 'auto', minHeight: '40px', background: '#fbbf24', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '13px', zIndex: 3000, boxShadow: '0 4px 20px rgba(0,0,0,0.5)', padding: '8px 16px', gap: '12px' }}>
+           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Shield size={16} /> 
+              <span className="audit-text">AUDITING USER ACCOUNT</span>
+           </div>
+           <button onClick={() => router.push('/admin')} style={{ background: '#000', color: '#fff', border: 'none', borderRadius: '8px', padding: '6px 14px', fontSize: '11px', fontWeight: 900, cursor: 'pointer', whiteSpace: 'nowrap' }}>EXIT AUDIT</button>
         </div>
       )}
 
       {/* SIDEBAR */}
-      <aside className={`dashboard-sidebar ${isSidebarOpen ? 'open' : ''}`} style={{ width: '280px', maxWidth: '85%', borderRight: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', zIndex: 2000, background: 'rgba(5,5,10,0.95)', backdropFilter: 'blur(30px)' }}>
+      <aside className={`dashboard-sidebar ${isSidebarOpen ? 'open' : ''}`} style={{ width: '280px', maxWidth: '85%', borderRight: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', zIndex: 2600, background: 'rgba(5,5,10,0.98)', backdropFilter: 'blur(30px)', transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)' }}>
         <div style={{ padding: '24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div style={{ background: 'linear-gradient(135deg, #3b82f6, #6366f1)', padding: '10px', borderRadius: '12px' }}><Mail size={20} color="#fff" /></div>
@@ -313,7 +316,7 @@ export default function Dashboard() {
         <div style={{ padding: '24px', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <div style={{ position: 'relative' }}>
             <Search style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.25)' }} size={16} />
-            <input type="text" placeholder="Search..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} style={{ width: '100%', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '12px 16px 12px 42px', fontSize: '14px', color: '#fff' }} />
+            <input type="text" placeholder="Search emails..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} style={{ width: '100%', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '10px 16px 10px 42px', fontSize: '14px', color: '#fff', outline: 'none' }} />
           </div>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <h3 style={{ fontSize: '18px', fontWeight: 800, margin: 0 }}>Inbox</h3>
@@ -346,8 +349,8 @@ export default function Dashboard() {
              </div>
           ) : filteredEmails.length > 0 ? (
             filteredEmails.map((email) => (
-              <div key={email.id} onClick={() => setSelectedEmail(email)} style={{ padding: '20px 24px', borderBottom: '1px solid rgba(255,255,255,0.04)', cursor: 'pointer', background: selectedEmail?.id === email.id ? 'rgba(59,130,246,0.08)' : 'transparent' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}><span style={{ fontSize: '14px', fontWeight: 700 }}>{email.sender.split('<')[0]}</span><span style={{ fontSize: '11px', opacity: 0.4 }}>{new Date(email.receivedAt).toLocaleDateString()}</span></div>
+              <div key={email.id} onClick={() => setSelectedEmail(email)} style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.04)', cursor: 'pointer', background: selectedEmail?.id === email.id ? 'rgba(59,130,246,0.08)' : 'transparent' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px', gap: '12px' }}><span style={{ fontSize: '14px', fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{email.sender.split('<')[0]}</span><span style={{ fontSize: '10px', opacity: 0.4, flexShrink: 0 }}>{new Date(email.receivedAt).toLocaleDateString()}</span></div>
                 <h4 style={{ fontSize: '13px', margin: '0 0 4px 0', opacity: 0.8 }}>{email.subject}</h4>
                 <p style={{ fontSize: '12px', opacity: 0.4, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{email.snippet}</p>
               </div>
@@ -370,7 +373,11 @@ export default function Dashboard() {
             <div className="custom-scrollbar" style={{ flex: 1, overflowY: 'auto', padding: '40px' }}>
               <div className="detail-content-wrapper" style={{ maxWidth: '800px', margin: '0 auto', background: '#fff', borderRadius: '24px', overflow: 'hidden' }}>
                 {selectedEmail.html ? (
-                   <iframe srcDoc={`<html><body style="font-family:sans-serif;padding:20px;margin:0;overflow-x:hidden;">${selectedEmail.html}</body></html>`} style={{ width: '100%', height: '800px', border: 'none' }} />
+                   <iframe 
+                      id={`email-iframe-${selectedEmail.id}`}
+                      srcDoc={`<html><head><style>body{font-family:sans-serif;padding:20px;margin:0;overflow-x:hidden;color:#333;}img{max-width:100%;height:auto;}</style></head><body>${selectedEmail.html}</body><script>setInterval(()=>{window.parent.postMessage({type:'resize-iframe',height:document.body.scrollHeight,emailId:'${selectedEmail.id}'},'*')},500)</script></html>`} 
+                      style={{ width: '100%', height: iframeHeights[selectedEmail.id] || 800, border: 'none', transition: 'height 0.2s ease' }} 
+                   />
                 ) : (
                   <div style={{ padding: '40px', color: '#333', whiteSpace: 'pre-wrap' }} className="text-body">{selectedEmail.text || selectedEmail.snippet}</div>
                 )}
@@ -386,22 +393,22 @@ export default function Dashboard() {
       </section>
       <style>{`
         @media (max-width: 1024px) {
-          .dashboard-container { overflow: hidden !important; }
+          .dashboard-container { overflow: hidden !important; height: 100dvh !important; }
           .dashboard-sidebar {
             position: fixed !important;
-            top: 0; bottom: 0; left: -260px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            top: 0; bottom: 0; left: 0;
+            transform: translateX(-102%);
             box-shadow: 20px 0 50px rgba(0,0,0,0.8);
           }
           .dashboard-sidebar.open {
-            left: 0 !important;
+            transform: translateX(0);
           }
-          .dashboard-list { width: 100% !important; flex: 1 !important; border-right: none !important; min-width: 0 !important; flex-shrink: 0 !important; }
+          .dashboard-list { width: 100% !important; flex: 1 !important; border-right: none !important; min-width: 0 !important; }
           .dashboard-detail {
             position: fixed !important;
             inset: 0;
             background: #05050a !important;
-            z-index: 1800;
+            z-index: 2500;
             display: none !important;
             width: 100% !important;
           }
@@ -410,14 +417,21 @@ export default function Dashboard() {
           .mobile-only { display: block !important; }
           .mobile-nav-header { display: flex !important; }
           .detail-header { padding: 16px 20px !important; }
-          .detail-header h1 { font-size: 16px !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+          .detail-header h1 { font-size: 18px !important; line-height: 1.2; word-break: break-word; }
           .custom-scrollbar { padding: 0 !important; }
           .detail-content-wrapper { border-radius: 12px !important; margin: 10px !important; }
           .text-body { padding: 20px !important; font-size: 14px !important; }
           .connect-wrapper { padding: 40px 20px !important; }
+          .audit-text { display: none; }
+          .audit-banner { justify-content: space-between !important; }
+        }
+        @media (max-width: 640px) {
+          .audit-banner { padding: 6px 12px !important; }
         }
         .refresh-btn:hover { color: #3b82f6 !important; background: rgba(59, 130, 246, 0.1) !important; }
         .refresh-btn:active { transform: scale(0.9); }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
       `}</style>
     </div>
   )
