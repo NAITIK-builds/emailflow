@@ -251,7 +251,7 @@ export default function Dashboard() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setIsSidebarOpen(false)}
-            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', zIndex: 190, display: 'none' }}
+            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', zIndex: 1999 }}
             className="mobile-only"
           />
         )}
@@ -266,7 +266,7 @@ export default function Dashboard() {
       )}
 
       {/* SIDEBAR */}
-      <aside className={`dashboard-sidebar ${isSidebarOpen ? 'open' : ''}`} style={{ width: '280px', maxWidth: '85%', borderRight: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', zIndex: 200, background: 'rgba(5,5,10,0.95)', backdropFilter: 'blur(30px)' }}>
+      <aside className={`dashboard-sidebar ${isSidebarOpen ? 'open' : ''}`} style={{ width: '280px', maxWidth: '85%', borderRight: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', zIndex: 2000, background: 'rgba(5,5,10,0.95)', backdropFilter: 'blur(30px)' }}>
         <div style={{ padding: '24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div style={{ background: 'linear-gradient(135deg, #3b82f6, #6366f1)', padding: '10px', borderRadius: '12px' }}><Mail size={20} color="#fff" /></div>
@@ -339,7 +339,7 @@ export default function Dashboard() {
       </main>
 
       {/* DETAIL */}
-      <section className={`dashboard-detail ${selectedEmail ? 'email-selected' : ''}`} style={{ flex: 1, display: 'flex', background: 'rgba(0,0,0,0.15)', overflow: 'hidden' }}>
+      <section className={`dashboard-detail ${selectedEmail ? 'email-selected' : ''}`} style={{ flex: 1, display: 'flex', background: 'rgba(0,0,0,0.15)', overflow: 'hidden', zIndex: 10 }}>
         {selectedEmail ? (
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
             <header className="detail-header" style={{ padding: '20px 40px', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', gap: '16px' }}>
@@ -383,7 +383,7 @@ export default function Dashboard() {
             position: fixed !important;
             inset: 0;
             background: #05050a !important;
-            z-index: 1500;
+            z-index: 1800;
             display: none !important;
             width: 100% !important;
           }
