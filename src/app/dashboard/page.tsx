@@ -317,7 +317,25 @@ export default function Dashboard() {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <h3 style={{ fontSize: '18px', fontWeight: 800, margin: 0 }}>Inbox</h3>
-            <button onClick={() => fetchEmails()} disabled={isFetchingEmails} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)' }}><RefreshCcw size={16} className={isFetchingEmails ? 'animate-spin' : ''} /></button>
+            <button 
+              onClick={() => fetchEmails()} 
+              disabled={isFetchingEmails} 
+              className="refresh-btn"
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                color: 'rgba(255,255,255,0.4)', 
+                cursor: 'pointer', 
+                padding: '8px', 
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.2s ease'
+              }}
+            >
+              <RefreshCcw size={20} className={isFetchingEmails ? 'animate-spin' : ''} />
+            </button>
           </div>
         </div>
 
@@ -398,6 +416,8 @@ export default function Dashboard() {
           .text-body { padding: 20px !important; font-size: 14px !important; }
           .connect-wrapper { padding: 40px 20px !important; }
         }
+        .refresh-btn:hover { color: #3b82f6 !important; background: rgba(59, 130, 246, 0.1) !important; }
+        .refresh-btn:active { transform: scale(0.9); }
       `}</style>
     </div>
   )
